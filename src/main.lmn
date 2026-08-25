@@ -1,0 +1,29 @@
+<root bg="#0c1c30" padding="28" gap="16">
+  <label class="title" height="40px" text="Todo" />
+
+  <row gap="10">
+    <input id="draft" class="field" grow="1" height="40px" tab-index="0"
+           placeholder="What needs doing?" bind-text="draft" />
+    <button id="add" class="primary" width="96px" height="40px" text="Add" />
+  </row>
+
+  <label class="caption" height="22px" bind-text="left_label" text="" />
+
+  <scroll grow="1" gap="0">
+    <for each="todos" key="id" gap="6">
+      <row class="todo-row" align="center" gap="10" height="44px">
+        <button id="tg|{row.id}" class="check {row.check_cls}" width="30px" height="30px"
+                text="{row.mark}" />
+        <label class="{row.label_cls}" grow="1" wrap="none" max-lines="1"
+               text="{row.label}" />
+        <button id="rm|{row.id}" class="remove" width="34px" height="30px" text="x" />
+      </row>
+    </for>
+  </scroll>
+
+  <row gap="10">
+    <button id="clear-done" class="ghost" width="140px" height="36px" text="Clear done" />
+  </row>
+
+  <script src="main.cdl" />
+</root>

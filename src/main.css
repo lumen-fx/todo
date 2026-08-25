@@ -1,0 +1,72 @@
+:root {
+  --color-accent:   #5fd9e0;
+  --color-bg:       #163459;
+  --color-hover:    #1d4477;
+  --color-active:   #0e2c52;
+  --color-row:      #10263f;
+  --color-on-bg:    #ffffff;
+  --color-on-bg-dim:#8eaecf;
+  --color-done:     #5a7a99;
+  --color-danger:   #e06c75;
+  --radius-md:      10;
+}
+
+.title   { font-size: 26; text-color: var(--color-on-bg); }
+.caption { font-size: 12; text-color: var(--color-on-bg-dim); }
+
+.field {
+  bg: var(--color-bg);
+  hover-bg: var(--color-hover);
+  text-color: var(--color-on-bg);
+  radius: var(--radius-md);
+  padding: 0 14;
+  font-size: 15;
+}
+.field:focus { outline: 2 var(--color-accent); }
+
+.primary {
+  bg: var(--color-bg);
+  hover-bg: var(--color-hover);
+  press-bg: var(--color-active);
+  text-color: var(--color-on-bg);
+  radius: var(--radius-md);
+  text-align: center;
+  font-size: 15;
+}
+.primary:focus { outline: 2 var(--color-accent); }
+
+.ghost {
+  bg: var(--color-row);
+  hover-bg: var(--color-hover);
+  text-color: var(--color-on-bg-dim);
+  radius: var(--radius-md);
+  text-align: center;
+  font-size: 13;
+}
+.ghost:focus { outline: 2 var(--color-accent); }
+
+.todo-row { bg: var(--color-row); radius: var(--radius-md); padding: 0 10; }
+
+.check {
+  bg: var(--color-bg);
+  hover-bg: var(--color-hover);
+  text-color: var(--color-on-bg-dim);
+  radius: 15;
+  text-align: center;
+  font-size: 14;
+}
+.check-on { text-color: var(--color-accent); }
+.check:focus { outline: 2 var(--color-accent); }
+
+.todo-label      { font-size: 15; text-color: var(--color-on-bg); }
+.todo-label-done { font-size: 15; text-color: var(--color-done); }
+
+.remove {
+  bg: var(--color-row);
+  hover-bg: var(--color-hover);
+  text-color: var(--color-danger);
+  radius: var(--radius-md);
+  text-align: center;
+  font-size: 14;
+}
+.remove:focus { outline: 2 var(--color-accent); }

@@ -1,0 +1,6 @@
+[app]
+entry = "main.lmn"
+
+[window]
+title = "Todo"
+size = [520, 640]

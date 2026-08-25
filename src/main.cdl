@@ -1,0 +1,123 @@
+import "lumen.cdl";
+
+// Rows live in the "todos" array signal; `<for each="todos" key="id">`
+// reconciles the list on every write. Presentation fields (mark, check_cls,
+// label_cls) are computed here so the markup stays dumb.
+
+// One row record. A candela map literal holds one value type, so every field
+// is a string; `<for>` binds them by name.
+fn make_row(id, label, done) {
+    let row = {"id": id, "label": label, "done": done};
+    if done == "true" {
+        row.insert("mark", "X");
+        row.insert("check_cls", "check-on");
+        row.insert("label_cls", "todo-label-done");
+    } else {
+        row.insert("mark", "");
+        row.insert("check_cls", "");
+        row.insert("label_cls", "todo-label");
+    }
+    return row;
+}
+
+// Every edit ends here: publish the rows, then refresh the count line.
+fn write_rows(rows) {
+    let todos = signal_array("todos");
+    todos.set(rows);
+    let left = 0;
+    for r in rows {
+        let done = as_str(r.get("done"));
+        if done != "true" { left = left + 1; }
+    }
+    let total = rows.len();
+    let count = str(left) + " open / " + str(total) + " total";
+    signal("left_label").set(count);
+}
+
+// The current rows, as plain maps. `all()` hands back `any`, so the list and
+// each record are read through the `as_list` / `as_map` downcasts.
+fn current_rows() {
+    let todos = signal_array("todos");
+    let raw = as_list(todos.all());
+    let out = [];
+    for item in raw {
+        out.push(as_map(item));
+    }
+    return out;
+}
+
+fn on_start() {
+    lumen::on("click", "add", "add_todo");
+    lumen::on("click", "clear-done", "clear_done");
+    signal("next_id").set_int(4);
+
+    let rows = [];
+    rows.push(make_row("1", "Scaffold this app", "true"));
+    rows.push(make_row("2", "Read the todo README", "false"));
+    rows.push(make_row("3", "Build something reactive", "false"));
+    write_rows(rows);
+}
+
+fn add_todo(id: string) {
+    let draft = signal("draft").get();
+    if draft == "" { return; }
+    let next = signal("next_id");
+    let n = next.get_int();
+    let rows = current_rows();
+    rows.push(make_row(str(n), draft, "false"));
+    next.set_int(n + 1);
+    signal("draft").set("");
+    write_rows(rows);
+}
+
+// candela has no closure value, so a filter is an explicit loop.
+fn clear_done(id: string) {
+    let kept = [];
+    let rows = current_rows();
+    for r in rows {
+        let done = as_str(r.get("done"));
+        if done != "true" { kept.push(r); }
+    }
+    write_rows(kept);
+}
+
+// Per-row buttons carry interpolated ids ("tg|<id>", "rm|<id>"); the global
+// on_click fallback splits the prefix off.
+fn on_click(id: string) {
+    let parts = id.split("|");
+    if parts.len() != 2 { return; }
+    let kind = parts[0];
+    let tid = parts[1];
+    if kind == "tg" { toggle_todo(tid); }
+    if kind == "rm" { remove_todo(tid); }
+}
+
+fn toggle_todo(tid) {
+    let out = [];
+    let rows = current_rows();
+    for r in rows {
+        let rid = as_str(r.get("id"));
+        if rid != tid {
+            out.push(r);
+        } else {
+            let done = as_str(r.get("done"));
+            let label = as_str(r.get("label"));
+            let flipped = "true";
+            if done == "true" { flipped = "false"; }
+            out.push(make_row(rid, label, flipped));
+        }
+    }
+    write_rows(out);
+}
+
+fn remove_todo(tid) {
+    let kept = [];
+    let rows = current_rows();
+    for r in rows {
+        let rid = as_str(r.get("id"));
+        if rid != tid { kept.push(r); }
+    }
+    write_rows(kept);
+}
+
+fn main() {}
