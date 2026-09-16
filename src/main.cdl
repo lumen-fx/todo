@@ -31,7 +31,7 @@ fn write_rows(rows) {
     }
     let total = rows.len();
     let count = str(left) + " open / " + str(total) + " total";
-    signal("left_label").set(count);
+    signal<string>("left_label").set(count);
 }
 
 // The current rows, as plain maps. `all()` hands back `any`, so the list and
@@ -49,7 +49,7 @@ fn current_rows() {
 fn on_start() {
     lumen::on("click", "add", "add_todo");
     lumen::on("click", "clear-done", "clear_done");
-    signal("next_id").set_int(4);
+    signal<int>("next_id").set(4);
 
     let rows = [];
     rows.push(make_row("1", "Scaffold this app", "true"));
@@ -59,14 +59,14 @@ fn on_start() {
 }
 
 fn add_todo(id: string) {
-    let draft = signal("draft").get();
+    let draft = signal<string>("draft").get();
     if draft == "" { return; }
-    let next = signal("next_id");
-    let n = next.get_int();
+    let next = signal<int>("next_id");
+    let n = next.get();
     let rows = current_rows();
     rows.push(make_row(str(n), draft, "false"));
-    next.set_int(n + 1);
-    signal("draft").set("");
+    next.set(n + 1);
+    signal<string>("draft").set("");
     write_rows(rows);
 }
 
