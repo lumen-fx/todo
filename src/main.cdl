@@ -5,7 +5,9 @@ import "lumen.cdl";
 // label_cls) are computed here so the markup stays dumb.
 
 // One row record. A candela map literal holds one value type, so every field
-// is a string; `<for>` binds them by name.
+// is a string; `<for>` binds them by name. A row read back out of the signal
+// is a `{any: any}`, so a row built here is widened with `as_map` wherever the
+// two meet in one list.
 fn make_row(id, label, done) {
     let row = {"id": id, "label": label, "done": done};
     if done == "true" {
@@ -52,9 +54,9 @@ fn on_start() {
     signal<int>("next_id").set(4);
 
     let rows = [];
-    rows.push(make_row("1", "Scaffold this app", "true"));
-    rows.push(make_row("2", "Read the todo README", "false"));
-    rows.push(make_row("3", "Build something reactive", "false"));
+    rows.push(as_map(make_row("1", "Scaffold this app", "true")));
+    rows.push(as_map(make_row("2", "Read the todo README", "false")));
+    rows.push(as_map(make_row("3", "Build something reactive", "false")));
     write_rows(rows);
 }
 
@@ -64,7 +66,7 @@ fn add_todo(id: string) {
     let next = signal<int>("next_id");
     let n = next.get();
     let rows = current_rows();
-    rows.push(make_row(str(n), draft, "false"));
+    rows.push(as_map(make_row(str(n), draft, "false")));
     next.set(n + 1);
     signal<string>("draft").set("");
     write_rows(rows);
@@ -104,7 +106,7 @@ fn toggle_todo(tid) {
             let label = as_str(r.get("label"));
             let flipped = "true";
             if done == "true" { flipped = "false"; }
-            out.push(make_row(rid, label, flipped));
+            out.push(as_map(make_row(rid, label, flipped)));
         }
     }
     write_rows(out);
