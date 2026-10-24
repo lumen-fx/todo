@@ -16,8 +16,8 @@ Concepts demonstrated:
 - **Derived presentation** - `mark` / `label_cls` / `check_cls` are
   computed in the script (`make_row`), keeping markup declarative.
 - **Records in candela** - a map literal holds one value type, so a row's
-  fields are strings; `as_list` / `as_map` read the array back, and a filter
-  is an explicit loop because candela has no closure value.
+  fields are strings; `as any[]` / `as {any: any}` read the array back, and a
+  filter is an explicit loop because candela has no closure value.
 - **`<scroll>`** - the list scrolls independently; try adding 30 rows.
 
 Run it:
